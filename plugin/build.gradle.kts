@@ -10,7 +10,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
-val reobfPlatforms = listOf("1.19.3", "1.19.4", "1.20", "1.20.2", "1.20.3")
+val reobfPlatforms = listOf("1.20", "1.20.2", "1.20.3")
 val mojangPlatforms = listOf("1.20.5", "1.21.2", "1.21.6", "1.21.11", "26.1")
 val allPlatforms: List<String> = reobfPlatforms + mojangPlatforms
 
