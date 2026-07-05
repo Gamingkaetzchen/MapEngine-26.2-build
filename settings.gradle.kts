@@ -15,5 +15,5 @@ include(
         "platform-paper-1.21.2",
         "platform-paper-1.21.6",
         "platform-paper-1.21.11",
-        "platform-paper-26.1"
+    "platform-paper-26.2"
 )

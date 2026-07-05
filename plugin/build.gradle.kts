@@ -11,7 +11,7 @@ plugins {
 }
 
 val reobfPlatforms = listOf("1.20", "1.20.2", "1.20.3")
-val mojangPlatforms = listOf("1.20.5", "1.21.2", "1.21.6", "1.21.11", "26.1")
+val mojangPlatforms = listOf("1.20.5", "1.21.2", "1.21.6", "1.21.11", "26.2")
 val allPlatforms: List<String> = reobfPlatforms + mojangPlatforms
 
 dependencies {
@@ -74,7 +74,7 @@ tasks {
 
     runServer {
         runDirectory = rootProject.layout.projectDirectory.dir("run")
-        minecraftVersion("26.1.1")
+        minecraftVersion("26.2")
     }
 }
 

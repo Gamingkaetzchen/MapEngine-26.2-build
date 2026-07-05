@@ -55,6 +55,7 @@ A hosted version of the javadoc can be found [here](https://repo.minceraft.dev/j
 
 | Server Version | Supported           |
 |----------------|---------------------|
+| Paper 26.2.x   | ✔️                  |
 | Paper 26.1.x   | ✔️                  |
 | Paper 1.21.x   | ✔️                  |
 | Paper 1.20.x   | ✔️                  |
