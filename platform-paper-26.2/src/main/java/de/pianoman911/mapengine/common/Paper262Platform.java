@@ -22,7 +22,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
@@ -51,18 +51,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.lang.reflect.Field;
 
 public class Paper262Platform implements IPlatform<Packet<ClientGamePacketListener>>, Listener {
 
     private static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = EntityDataSerializers.BYTE.createAccessor(0);
+    private static final EntityDataAccessor<ItemStack> DATA_ITEM = getItemFrameDataAccessor("DATA_ITEM");
+    private static final EntityDataAccessor<Integer> DATA_ROTATION = getItemFrameDataAccessor("DATA_ROTATION");
     private static final EntityDataAccessor<Float> DATA_INTERACTION_BOX_WIDTH_ID = EntityDataSerializers.FLOAT.createAccessor(8);
     private static final EntityDataAccessor<Float> DATA_INTERACTION_BOX_HEIGHT_ID = EntityDataSerializers.FLOAT.createAccessor(9);
     private static final EntityDataAccessor<Boolean> DATA_INTERACTION_BOX_RESPONSIVE_ID = EntityDataSerializers.BOOLEAN.createAccessor(10);
 
     private static final Paper262SynchedDataBuilder ITEM_FRAME_DATA = Paper262SynchedDataBuilder.builder()
             .setDataItem(DATA_SHARED_FLAGS_ID, (byte) 0x00)
-            .setDataItem(ItemFrame.DATA_ITEM, ItemStack.EMPTY)
-            .setDataItem(ItemFrame.DATA_ROTATION, 0);
+            .setDataItem(DATA_ITEM, ItemStack.EMPTY)
+            .setDataItem(DATA_ROTATION, 0);
     private static final Paper262SynchedDataBuilder INTERACTION_DATA = Paper262SynchedDataBuilder.builder()
             .setDataItem(DATA_SHARED_FLAGS_ID, (byte) 0x00)
             .setDataItem(DATA_INTERACTION_BOX_WIDTH_ID, 0f)
@@ -151,7 +154,7 @@ public class Paper262Platform implements IPlatform<Packet<ClientGamePacketListen
 
         return PacketContainer.wrap(this, new ClientboundAddEntityPacket(entityId, UUID.randomUUID(),
                 pos.getX(), pos.getY(), pos.getZ(), 0, 0,
-                glowing ? EntityType.GLOW_ITEM_FRAME : EntityType.ITEM_FRAME, facingIndex, Vec3.ZERO, 0));
+            glowing ? EntityTypes.GLOW_ITEM_FRAME : EntityTypes.ITEM_FRAME, facingIndex, Vec3.ZERO, 0));
     }
 
     @Override
@@ -162,7 +165,7 @@ public class Paper262Platform implements IPlatform<Packet<ClientGamePacketListen
 
         mapItem.set(DataComponents.MAP_ID, new MapId(mapId));
 
-        entityData.set(ItemFrame.DATA_ITEM, mapItem); // map item
+        entityData.set(DATA_ITEM, mapItem); // map item
 
         if (invisible) {
             entityData.set(DATA_SHARED_FLAGS_ID, (byte) 0x20); // invisible
@@ -179,7 +182,7 @@ public class Paper262Platform implements IPlatform<Packet<ClientGamePacketListen
     @Override
     public PacketContainer<?> createInteractionEntitySpawnPacket(int interactionId, Vector pos, BlockFace direction) {
         return PacketContainer.wrap(this, new ClientboundAddEntityPacket(interactionId, UUID.randomUUID(),
-                pos.getX(), pos.getY(), pos.getZ(), 0, 0, EntityType.INTERACTION, 0, Vec3.ZERO, 0));
+                pos.getX(), pos.getY(), pos.getZ(), 0, 0, EntityTypes.INTERACTION, 0, Vec3.ZERO, 0));
     }
 
     @Override
@@ -207,9 +210,20 @@ public class Paper262Platform implements IPlatform<Packet<ClientGamePacketListen
     public PacketContainer<?> createItemRotationPacket(int entityId, int rotation) {
         SynchedEntityData entityData = ITEM_FRAME_DATA.build();
 
-        entityData.set(ItemFrame.DATA_ROTATION, rotation, true); // item rotation (0-7)
+        entityData.set(DATA_ROTATION, rotation, true); // item rotation (0-7)
 
         return PacketContainer.wrap(this, new ClientboundSetEntityDataPacket(entityId, Objects.requireNonNull(entityData.packDirty())));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> EntityDataAccessor<T> getItemFrameDataAccessor(String fieldName) {
+        try {
+            Field field = ItemFrame.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (EntityDataAccessor<T>) field.get(null);
+        } catch (ReflectiveOperationException exception) {
+            throw new ExceptionInInitializerError(exception);
+        }
     }
 
     @SuppressWarnings("unchecked")
