@@ -144,17 +144,23 @@ public class Paper262Platform implements IPlatform<Packet<ClientGamePacketListen
     @Override
     public PacketContainer<Packet<ClientGamePacketListener>> createMapEntitySpawnPacket(int entityId, BlockVector pos, BlockFace facing, boolean glowing) {
         int facingIndex = switch (facing) {
-            case UP -> 1;
-            case NORTH -> 2;
-            case SOUTH -> 3;
-            case WEST -> 4;
-            case EAST -> 5;
-            default -> 0;
+            case UP ->
+                1;
+            case NORTH ->
+                2;
+            case SOUTH ->
+                3;
+            case WEST ->
+                4;
+            case EAST ->
+                5;
+            default ->
+                0;
         };
 
         return PacketContainer.wrap(this, new ClientboundAddEntityPacket(entityId, UUID.randomUUID(),
                 pos.getX(), pos.getY(), pos.getZ(), 0, 0,
-            glowing ? EntityTypes.GLOW_ITEM_FRAME : EntityTypes.ITEM_FRAME, facingIndex, Vec3.ZERO, 0));
+                glowing ? EntityTypes.GLOW_ITEM_FRAME : EntityTypes.ITEM_FRAME, facingIndex, Vec3.ZERO, 0));
     }
 
     @Override

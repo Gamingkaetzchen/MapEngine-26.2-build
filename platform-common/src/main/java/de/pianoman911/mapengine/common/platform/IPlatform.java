@@ -8,7 +8,15 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public interface IPlatform<T> {
+
+    AtomicInteger ENTITY_ID_ALLOCATOR = new AtomicInteger(Integer.MIN_VALUE);
+
+    default int nextEntityId() {
+        return ENTITY_ID_ALLOCATOR.getAndIncrement();
+    }
 
     String getDisplayedName();
 

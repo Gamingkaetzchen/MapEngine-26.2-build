@@ -92,6 +92,10 @@ public class FullSpacedColorBuffer {
      * @param newColor the new color of the pixel
      */
     public void pixel(int x, int y, int newColor) {
+        if (x < 0 || x >= width() || y < 0 || y >= height()) {
+            return;
+        }
+
         int newAlpha = ((newColor >> 24) & 0xFF);
         if (newAlpha == 255) {
             // completely opaque pixel, overwrite

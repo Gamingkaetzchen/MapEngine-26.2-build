@@ -198,6 +198,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+.server/
 
 ### macOS Patch ###
 # iCloud generated files
@@ -454,3 +455,4 @@ run/
 .idea/
 next-env.d.ts
 *.iml
+

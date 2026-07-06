@@ -4,7 +4,6 @@ import de.pianoman911.mapengine.api.clientside.IFrame;
 import de.pianoman911.mapengine.common.platform.PacketContainer;
 import de.pianoman911.mapengine.core.MapEnginePlugin;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
@@ -14,17 +13,17 @@ public class Frame extends FilledMap implements IFrame {
     public static final double INVISIBLE_MAP_DEPTH = 0.0078125;
     public static final double INTERACTION_OFFSET = 0.0626;
 
-    @SuppressWarnings("deprecation") // unsafe api, don't care + don't ask
-    protected final int entityId = Bukkit.getUnsafe().nextEntityId();
-    @SuppressWarnings("deprecation")
-    protected final int interactionId = Bukkit.getUnsafe().nextEntityId();
     protected final BlockFace direction;
     protected final BlockVector pos;
+    protected final int entityId;
+    protected final int interactionId;
 
     protected Frame(MapEnginePlugin plugin, BlockFace direction, BlockVector pos) {
         super(plugin);
         this.direction = direction;
         this.pos = pos;
+        this.entityId = plugin.platform().nextEntityId();
+        this.interactionId = plugin.platform().nextEntityId();
     }
 
     protected PacketContainer<?> spawnPacket(BlockFace visualDirection, boolean glowing) {
